@@ -20,8 +20,12 @@ function save(key,val){ localStorage.setItem(key,val); }
 ========================================== */
 const diasSemana = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
 
-function getWeekHistory(){ return JSON.parse(localStorage.getItem("agua_hist") || "[0,0,0,0,0,0,0]"); }
-function saveWeekHistory(hist){ localStorage.setItem("agua_hist", JSON.stringify(hist)); }
+function getWeekHistory(){ 
+  return JSON.parse(localStorage.getItem("agua_hist") || "[0,0,0,0,0,0,0]"); 
+}
+function saveWeekHistory(hist){ 
+  localStorage.setItem("agua_hist", JSON.stringify(hist)); 
+}
 
 function monthlyReset(){
   const mesAtual = new Date().getMonth();
@@ -58,10 +62,10 @@ function renderDashboard(){
   const cards = document.getElementById("cards");
 
   tasks.forEach(task=>{
-    let p = load(task.key);
-    let c=document.createElement("div");
+    const p = load(task.key);
+    const c = document.createElement("div");
     c.className="card";
-    c.innerHTML = `
+    c.innerHTML=`
       <h2>${task.name}</h2>
       <div class='progress-bar'><div class='progress' style='width:${p}%'></div></div>
       <button class='btn' onclick="inc('${task.key}')">+ 10%</button>
@@ -71,11 +75,11 @@ function renderDashboard(){
 
     if(task.key==="estudos"){
       estudos.forEach(lang=>{
-        let key = "est_" + lang;
-        let p2 = load(key);
-        let sub = document.createElement("div");
+        const key = "est_" + lang;
+        const p2 = load(key);
+        const sub = document.createElement("div");
         sub.className = "card";
-        sub.innerHTML = `
+        sub.innerHTML=`
           <h3>${lang}</h3>
           <div class='progress-bar'><div class='progress' style='width:${p2}%'></div></div>
           <button class='btn' onclick="inc('${key}')">+ 10%</button>
@@ -95,7 +99,7 @@ function renderStats(){
   area.innerHTML = "<h1>Estatísticas</h1>";
   let html = "<div class='card'><h2>Resumo</h2>";
   tasks.forEach(t=> html+= `<p>${t.name}: ${load(t.key)}%</p>`);
-  html+="</div>";
+  html += "</div>";
   area.innerHTML += html;
   renderStatsPyramid();
 }
@@ -108,8 +112,8 @@ function renderStatsPyramid(){
       <div class="pyramid-container">
   `;
   tasks.forEach(t=>{
-    let val = load(t.key);
-    let height = val*2;
+    const val = load(t.key);
+    const height = val*2;
     html += `
       <div class="bar">
         <div class="bar-value">${val}%</div>
@@ -166,7 +170,7 @@ function renderAgua(){
 
   let grafico = "<h2>Consumo semanal</h2><div style='display:flex; gap:15px; margin-top:10px;'>";
   hist.forEach((v,i)=>{
-    grafico+=`
+    grafico += `
       <div style="text-align:center;">
         <div style="
           width:30px;
@@ -191,6 +195,7 @@ function resetAgua(){
 
 function createDrop(){
   const card = document.querySelector(".card");
+  if(!card) return;
   const drop = document.createElement("div");
   drop.className="drop";
   card.appendChild(drop);
@@ -204,7 +209,7 @@ function addLitro(){
 
   let hist = getWeekHistory();
   let dia = new Date().getDay();
-  hist[dia]+=1;
+  hist[dia] += 1;
   saveWeekHistory(hist);
 
   createDrop();
@@ -225,13 +230,13 @@ function inc(key){
 ========================================== */
 function applyBackground(){
   let bg = localStorage.getItem("bgmode") || "light";
-  document.documentElement.setAttribute("data-bg",bg);
+  document.documentElement.setAttribute("data-bg", bg);
 }
 
 function toggleBackground(){
   let current = localStorage.getItem("bgmode") || "light";
-  let next = current==="light"?"dark":"light";
-  localStorage.setItem("bgmode",next);
+  let next = current === "light" ? "dark" : "light";
+  localStorage.setItem("bgmode", next);
   applyBackground();
 }
 

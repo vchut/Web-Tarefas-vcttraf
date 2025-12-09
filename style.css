@@ -3,12 +3,18 @@
 ============================ */
 :root {
   --icon-image: url('./assets/dark-light.svg');
-  --background-image: url('./assets/coringa.jpg');
+  --background-light: url('./assets/coringa.jpg');
+  --background-dark: url('./assets/samurai.jpg');
+}
+
+[data-bg="light"] {
+  --icon-image: url('./assets/dark-light.svg');
+  --background-image: var(--background-light);
 }
 
 [data-bg="dark"] {
   --icon-image: url('./assets/mu-.svg');
-  --background-image: url('./assets/samurai.jpg');
+  --background-image: var(--background-dark);
 }
 
 /* ============================
@@ -53,7 +59,7 @@ html, body {
   background-image: var(--icon-image);
   background-size: contain;
   background-repeat: no-repeat;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 /* ============================
@@ -77,7 +83,7 @@ html, body {
   padding: 12px 0;
   cursor: pointer;
   color: #ccc;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .sidebar li:hover {
@@ -128,7 +134,7 @@ h1, h2 { color: #ff2fcf; }
   background: #ff2fcf;
   border-radius: 5px;
   width: 0%;
-  transition: width .25s ease-in-out;
+  transition: width 0.25s ease-in-out;
 }
 
 /* ============================
@@ -144,7 +150,7 @@ h1, h2 { color: #ff2fcf; }
   color: white;
   width: 100%;
   font-size: 16px;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .btn:hover {
@@ -159,7 +165,7 @@ h1, h2 { color: #ff2fcf; }
   font-size: 40px;
   cursor: pointer;
   margin: 5px;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .emoji:hover { transform: scale(1.2); }
@@ -181,7 +187,7 @@ h1, h2 { color: #ff2fcf; }
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  transition: transform .25s;
+  transition: transform 0.25s;
 }
 
 .bar:hover { transform: translateY(-8px) scale(1.05); }
@@ -193,7 +199,7 @@ h1, h2 { color: #ff2fcf; }
   margin-bottom: 8px;
   opacity: 0;
   animation: fadeIn 400ms forwards;
-  animation-delay: .5s;
+  animation-delay: 0.5s;
 }
 
 .bar-fill {
@@ -231,7 +237,9 @@ h1, h2 { color: #ff2fcf; }
   color: #ff2fcf;
 }
 
-/* animações */
+/* ============================
+   ANIMAÇÕES
+============================ */
 @keyframes growPyramid { from { border-bottom-width: 0px; } to { border-bottom-width: var(--target-height); } }
 @keyframes pulseDot { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.5); } 100% { transform: translateX(-50%) scale(1); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -257,12 +265,9 @@ h1, h2 { color: #ff2fcf; }
   .bar-fill { border-left-width: 40px; border-right-width: 40px; }
 }
 
-
-
-
-
-
-/* Fundo fixo cobrindo toda a tela */
+/* ============================
+   FUNDO FIXO COBRINDO TELA
+============================ */
 body::before {
   content: "";
   position: fixed;
@@ -270,12 +275,8 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('./assets/coringa.jpg') no-repeat center center;
+  background: var(--background-image) no-repeat center center;
   background-size: cover;
-  z-index: -1; /* coloca atrás de todo conteúdo */
-}
-
-[data-bg="dark"]::before {
-  background: url('./assets/samurai.jpg') no-repeat center center;
-  background-size: cover;
+  z-index: -1;
+  transition: background 0.5s ease;
 }
