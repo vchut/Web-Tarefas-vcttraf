@@ -1,13 +1,13 @@
 /* ==========================================
-      CONFIGURAÇÕES INICIAIS
+    CONFIGURAÇÕES INICIAIS
 ========================================== */
 const tasks = [
-  { name: "Academia", key: "academia" },
-  { name: "Acordar Cedo", key: "acordar" },
-  { name: "Leitura", key: "leitura" },
-  { name: "Água", key: "agua" },
-  { name: "Humor", key: "humor" },
-  { name: "Estudos", key: "estudos" }
+  { name: "Academia", key: "academia", max: 100 },
+  { name: "Acordar Cedo", key: "acordar", max: 100 },
+  { name: "Leitura", key: "leitura", max: 100 },
+  { name: "Água", key: "agua", max: 30 }, // limite mensal
+  { name: "Humor", key: "humor", max: 100 },
+  { name: "Estudos", key: "estudos", max: 100 }
 ];
 
 const estudos = ["JavaScript","Python","SQL","React Native","Node.js","CSS","HTML"];
@@ -16,7 +16,7 @@ function load(key){ return parseInt(localStorage.getItem(key) || 0); }
 function save(key,val){ localStorage.setItem(key,val); }
 
 /* ==========================================
-      HISTÓRICO DE ÁGUA
+    HISTÓRICO DE ÁGUA
 ========================================== */
 const diasSemana = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
 
@@ -38,7 +38,7 @@ function monthlyReset(){
 }
 
 /* ==========================================
-      NAVEGAÇÃO
+    NAVEGAÇÃO
 ========================================== */
 function navigate(page){
   const routes = { dashboard: renderDashboard, stats: renderStats, humor: renderHumor, agua: renderAgua };
@@ -46,7 +46,7 @@ function navigate(page){
 }
 
 /* ==========================================
-      RESET
+    RESET
 ========================================== */
 function reset(key){
   save(key, 0);
@@ -54,7 +54,7 @@ function reset(key){
 }
 
 /* ==========================================
-      DASHBOARD
+    DASHBOARD COM ANIMAÇÃO SUAVE
 ========================================== */
 function renderDashboard(){
   const area = document.getElementById("content");
@@ -67,32 +67,55 @@ function renderDashboard(){
     c.className="card";
     c.innerHTML=`
       <h2>${task.name}</h2>
-      <div class='progress-bar'><div class='progress' style='width:${p}%'></div></div>
-      <button class='btn' onclick="inc('${task.key}')">+ 10%</button>
+      <div class='progress-bar'><div class='progress' id='progress-${task.key}' style='width:0%'></div></div>
+      <button class='btn' onclick="inc('${task.key}')">+10%</button>
       <button class='btn reset' onclick="reset('${task.key}')">Reiniciar</button>
     `;
     cards.appendChild(c);
+
+    // anima a barra para o valor atual
+    animateProgress(task.key, p, task.max);
 
     if(task.key==="estudos"){
       estudos.forEach(lang=>{
         const key = "est_" + lang;
         const p2 = load(key);
         const sub = document.createElement("div");
-        sub.className = "card";
+        sub.className = "card sub-card";
         sub.innerHTML=`
           <h3>${lang}</h3>
-          <div class='progress-bar'><div class='progress' style='width:${p2}%'></div></div>
-          <button class='btn' onclick="inc('${key}')">+ 10%</button>
+          <div class='progress-bar'><div class='progress' id='progress-${key}' style='width:0%'></div></div>
+          <button class='btn' onclick="inc('${key}')">+10%</button>
           <button class='btn reset' onclick="reset('${key}')">Reiniciar</button>
         `;
         cards.appendChild(sub);
+        animateProgress(key, p2, 100);
       });
     }
   });
 }
 
 /* ==========================================
-      ESTATÍSTICAS / PIRÂMIDE
+    FUNÇÃO DE ANIMAÇÃO SUAVE
+========================================== */
+function animateProgress(key, target, max){
+  const progressBar = document.getElementById(`progress-${key}`);
+  if(!progressBar) return;
+  let current = 0;
+  const interval = setInterval(()=>{
+    if(current >= target) {
+      clearInterval(interval);
+      return;
+    }
+    current += 1;
+    let percent = (current/max)*100;
+    if(percent > 100) percent = 100;
+    progressBar.style.width = percent + "%";
+  }, 15); // velocidade da animação (15ms)
+}
+
+/* ==========================================
+    ESTATÍSTICAS / PIRÂMIDE
 ========================================== */
 function renderStats(){
   const area = document.getElementById("content");
@@ -127,7 +150,7 @@ function renderStatsPyramid(){
 }
 
 /* ==========================================
-      HUMOR
+    HUMOR
 ========================================== */
 function renderHumor(){
   const area = document.getElementById("content");
@@ -142,7 +165,7 @@ function renderHumor(){
       <h2 id='humorDisplay'></h2>
     </div>
   `;
-  document.getElementById("humorDisplay").innerText = localStorage.getItem("emoji") || "";
+  document.getElementById("humorDisplay").innerText = localStorage.getItem("emoji") || "Clique em um emoji!";
 }
 
 function setHumor(e){
@@ -151,40 +174,38 @@ function setHumor(e){
 }
 
 /* ==========================================
-      ÁGUA
+    ÁGUA
 ========================================== */
 function renderAgua(){
   const area = document.getElementById("content");
   const litros = load("agua_mes");
   const hist = getWeekHistory();
 
+  const metaMensal = 30;
+  const alturaMax = 120;
+
   area.innerHTML = `
     <h1>Água Mensal</h1>
     <div class='card'>
-      <p>Meta: 30 litros / mês</p>
-      <p>Você já bebeu: ${litros} L</p>
+      <p>Meta: ${metaMensal} litros / mês</p>
+      <p>Você já bebeu: <strong>${litros} L</strong></p>
       <button class='btn' onclick='addLitro()'>Beber 1L</button>
       <button class='btn reset' onclick='resetAgua()'>Reiniciar</button>
     </div>
   `;
 
-  let grafico = "<h2>Consumo semanal</h2><div style='display:flex; gap:15px; margin-top:10px;'>";
+  let grafico = "<h2>Consumo semanal</h2><div class='water-bar-container'>";
   hist.forEach((v,i)=>{
+    const altura = Math.min(v/metaMensal,1)*alturaMax;
     grafico += `
-      <div style="text-align:center;">
-        <div style="
-          width:30px;
-          height:${v*10}px;
-          background:#00c3ff;
-          box-shadow:0 0 8px #00c3ff;
-          border-radius:6px;">
-        </div>
+      <div class="water-bar-column">
+        <div class="water-bar-fill" style="height:${altura}px"></div>
         <span>${diasSemana[i]}</span>
       </div>
     `;
   });
   grafico += "</div>";
-  area.innerHTML += grafico;
+  area.innerHTML += `<div class='card'>${grafico}</div>`;
 }
 
 function resetAgua(){
@@ -203,9 +224,10 @@ function createDrop(){
 }
 
 function addLitro(){
+  const metaMensal = 30;
   let atual = load("agua_mes");
-  atual = Math.min(atual+1,30);
-  save("agua_mes",atual);
+  atual = Math.min(atual + 1, metaMensal);
+  save("agua_mes", atual);
 
   let hist = getWeekHistory();
   let dia = new Date().getDay();
@@ -217,16 +239,19 @@ function addLitro(){
 }
 
 /* ==========================================
-      INCREMENTO GERAL
+    INCREMENTO GERAL
 ========================================== */
 function inc(key){
+  let task = tasks.find(t=> t.key===key) || { max: 100 };
   let v = load(key);
-  save(key, Math.min(v+10,100));
-  navigate("dashboard");
+  let max = task.max;
+  v = Math.min(v+10,max);
+  save(key, v);
+  animateProgress(key, v, max);
 }
 
 /* ==========================================
-      FUNDO / TEMA
+    FUNDO / TEMA
 ========================================== */
 function applyBackground(){
   let bg = localStorage.getItem("bgmode") || "light";
