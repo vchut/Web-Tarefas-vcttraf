@@ -1,0 +1,281 @@
+/* ============================
+   TROCA DE FUNDO LIGHT/DARK
+============================ */
+:root {
+  --icon-image: url('./assets/dark-light.svg');
+  --background-image: url('./assets/coringa.jpg');
+}
+
+[data-bg="dark"] {
+  --icon-image: url('./assets/mu-.svg');
+  --background-image: url('./assets/samurai.jpg');
+}
+
+/* ============================
+   BASE
+============================ */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--background-image) no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  transition: background 0.5s ease, color 0.5s ease;
+}
+
+/* ============================
+   BOTÃO MUDAR FUNDO
+============================ */
+#themeToggleButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+#themeToggleButton:hover {
+  background: #333;
+}
+
+#themeToggleIcon {
+  width: 30px;
+  height: 30px;
+  background-image: var(--icon-image);
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: .3s;
+}
+
+/* ============================
+   SIDEBAR
+============================ */
+.sidebar {
+  width: 220px;
+  background: #111;
+  padding: 20px;
+  height: 100vh;
+  box-shadow: 0 0 10px #ff2fcf55;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.sidebar h2 { color: #ff2fcf; }
+
+.sidebar ul { list-style: none; padding: 0; }
+
+.sidebar li {
+  padding: 12px 0;
+  cursor: pointer;
+  color: #ccc;
+  transition: .2s;
+}
+
+.sidebar li:hover {
+  color: #ff2fcf;
+  transform: translateX(4px);
+}
+
+/* ============================
+   MAIN
+============================ */
+main {
+  flex: 1;
+  padding: 30px;
+}
+
+h1, h2 { color: #ff2fcf; }
+
+/* ============================
+   CARDS
+============================ */
+#cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: rgba(20, 20, 20, 0.9);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px #ff2fcf55;
+  backdrop-filter: blur(3px);
+}
+
+/* ============================
+   PROGRESS BAR
+============================ */
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #333;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.progress {
+  height: 100%;
+  background: #ff2fcf;
+  border-radius: 5px;
+  width: 0%;
+  transition: width .25s ease-in-out;
+}
+
+/* ============================
+   BUTTONS
+============================ */
+.btn {
+  margin-top: 10px;
+  padding: 10px;
+  background: #ff2fcf;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  width: 100%;
+  font-size: 16px;
+  transition: .2s;
+}
+
+.btn:hover {
+  transform: scale(1.04);
+  box-shadow: 0 0 10px #ff2fcf99;
+}
+
+/* ============================
+   EMOJIS
+============================ */
+.emoji {
+  font-size: 40px;
+  cursor: pointer;
+  margin: 5px;
+  transition: .2s;
+}
+
+.emoji:hover { transform: scale(1.2); }
+
+/* ============================
+   PIRÂMIDE TRIANGULAR (STATS)
+============================ */
+.pyramid-container {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  align-items: flex-end;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform .25s;
+}
+
+.bar:hover { transform: translateY(-8px) scale(1.05); }
+
+.bar-value {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ff2fcf;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: fadeIn 400ms forwards;
+  animation-delay: .5s;
+}
+
+.bar-fill {
+  width: 0;
+  height: 0;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+  border-bottom: 0 solid #ff2fcf;
+  animation: growPyramid 900ms forwards;
+  position: relative;
+}
+
+.bar-fill::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  background: #ff2fcf;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.bar-fill.grown::after {
+  opacity: 1;
+  animation: pulseDot 1.4s infinite ease-in-out;
+}
+
+.bar-label {
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+  color: #ff2fcf;
+}
+
+/* animações */
+@keyframes growPyramid { from { border-bottom-width: 0px; } to { border-bottom-width: var(--target-height); } }
+@keyframes pulseDot { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.5); } 100% { transform: translateX(-50%) scale(1); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ============================
+   RESPONSIVIDADE
+============================ */
+@media (max-width: 600px) {
+  body { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; text-align: center; }
+  #cards { grid-template-columns: 1fr; }
+  .pyramid-container { gap: 15px; }
+  .bar-fill { border-left-width: 20px; border-right-width: 20px; }
+}
+
+@media (max-width: 900px) {
+  .sidebar { width: 170px; }
+  .bar-fill { border-left-width: 24px; border-right-width: 24px; }
+}
+
+@media (min-width: 1300px) {
+  .pyramid-container { gap: 40px; }
+  .bar-fill { border-left-width: 40px; border-right-width: 40px; }
+}
+
+
+
+
+
+
+/* Fundo fixo cobrindo toda a tela */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('./assets/coringa.jpg') no-repeat center center;
+  background-size: cover;
+  z-index: -1; /* coloca atrás de todo conteúdo */
+}
+
+[data-bg="dark"]::before {
+  background: url('./assets/samurai.jpg') no-repeat center center;
+  background-size: cover;
+}
