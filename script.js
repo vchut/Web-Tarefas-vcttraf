@@ -1,182 +1,256 @@
-/* ==========================================
-    CONFIGURAÇÕES INICIAIS
-========================================== */
+/* ============================================================
+   CONFIGURAÇÕES INICIAIS
+   - Lista de tarefas principais
+   - Lista de linguagens estudadas
+   - Funções simples de storage
+============================================================ */
+
 const tasks = [
-  { name: "Academia", key: "academia", max: 100 },
-  { name: "Acordar Cedo", key: "acordar", max: 100 },
-  { name: "Leitura", key: "leitura", max: 100 },
-  { name: "Água", key: "agua", max: 30 }, // limite mensal
-  { name: "Humor", key: "humor", max: 100 },
-  { name: "Estudos", key: "estudos", max: 100 }
+  { name: "Academia",     key: "academia", max: 100 },
+  { name: "Acordar Cedo",  key: "acordar",  max: 100 },
+  { name: "Leitura",       key: "leitura",  max: 100 },
+  { name: "Água",          key: "agua",     max: 100 }, // agora independente
+  { name: "Humor",         key: "humor",    max: 100 },
+  { name: "Estudos",       key: "estudos",  max: 100 }
 ];
 
+// categorias internas da área de estudos
 const estudos = ["JavaScript","Python","SQL","React Native","Node.js","CSS","HTML"];
 
-function load(key){ return parseInt(localStorage.getItem(key) || 0); }
-function save(key,val){ localStorage.setItem(key,val); }
+// helpers simples
+const load = key => parseInt(localStorage.getItem(key) || 0);
+const save = (key, value) => localStorage.setItem(key, value);
 
-/* ==========================================
-    HISTÓRICO DE ÁGUA
-========================================== */
+
+/* ============================================================
+   ÁGUA – CONTROLE MENSAL (separado do dashboard)
+============================================================ */
+
 const diasSemana = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
 
-function getWeekHistory(){ 
-  return JSON.parse(localStorage.getItem("agua_hist") || "[0,0,0,0,0,0,0]"); 
-}
-function saveWeekHistory(hist){ 
-  localStorage.setItem("agua_hist", JSON.stringify(hist)); 
+function getWeekHistory() {
+  return JSON.parse(localStorage.getItem("agua_hist") || "[0,0,0,0,0,0,0]");
 }
 
-function monthlyReset(){
+function saveWeekHistory(hist) {
+  localStorage.setItem("agua_hist", JSON.stringify(hist));
+}
+
+function monthlyReset() {
   const mesAtual = new Date().getMonth();
   const salvo = load("mes_salvo");
-  if(salvo !== mesAtual){
+
+  if (salvo !== mesAtual) {
     save("mes_salvo", mesAtual);
     save("agua_mes", 0);
     saveWeekHistory([0,0,0,0,0,0,0]);
+    // água do dashboard agora não sincroniza, então não resetamos
   }
 }
 
-/* ==========================================
-    NAVEGAÇÃO
-========================================== */
-function navigate(page){
-  const routes = { dashboard: renderDashboard, stats: renderStats, humor: renderHumor, agua: renderAgua };
+
+/* ============================================================
+   NAVEGAÇÃO ENTRE TELAS
+============================================================ */
+
+function navigate(page) {
+  const routes = {
+    dashboard: renderDashboard,
+    stats:     renderStats,
+    humor:     renderHumor,
+    agua:      renderAgua
+  };
+
   routes[page]?.();
 }
 
-/* ==========================================
-    RESET
-========================================== */
-function reset(key){
+
+/* ============================================================
+   RESET UNIVERSAL
+============================================================ */
+function reset(key) {
   save(key, 0);
+
+  if (key === "agua") {
+    // reset do dashboard NÃO mexe no mensal
+    save("agua", 0);
+  }
+
   navigate("dashboard");
 }
 
-/* ==========================================
-    DASHBOARD COM ANIMAÇÃO SUAVE
-========================================== */
-function renderDashboard(){
+
+/* ============================================================
+   DASHBOARD
+   - cards principais
+   - barras animadas
+   - estudos com subcards
+   - água funcionando independente do mensal
+============================================================ */
+function renderDashboard() {
   const area = document.getElementById("content");
   area.innerHTML = "<h1>Dashboard</h1><div id='cards'></div>";
+
   const cards = document.getElementById("cards");
 
-  tasks.forEach(task=>{
-    const p = load(task.key);
-    const c = document.createElement("div");
-    c.className="card";
-    c.innerHTML=`
+  const showKeys = ["academia","acordar","leitura","humor","estudos","agua"];
+
+  tasks.forEach(task => {
+    if (!showKeys.includes(task.key)) return;
+
+    let progressValue = load(task.key);
+
+    // água do dashboard NÃO sincroniza com agua_mes
+    if (task.key === "agua") {
+      progressValue = load("agua"); // totalmente independente
+    }
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
       <h2>${task.name}</h2>
-      <div class='progress-bar'><div class='progress' id='progress-${task.key}' style='width:0%'></div></div>
-      <button class='btn' onclick="inc('${task.key}')">+10%</button>
-      <button class='btn reset' onclick="reset('${task.key}')">Reiniciar</button>
+
+      <div class="progress-bar">
+        <div class="progress" id="progress-${task.key}" style="width:0%"></div>
+      </div>
+
+      <button class="btn" onclick="inc('${task.key}')">+10%</button>
+      <button class="btn reset" onclick="reset('${task.key}')">Reiniciar</button>
     `;
-    cards.appendChild(c);
 
-    // anima a barra para o valor atual
-    animateProgress(task.key, p, task.max);
+    cards.appendChild(card);
 
-    if(task.key==="estudos"){
-      estudos.forEach(lang=>{
-        const key = "est_" + lang;
-        const p2 = load(key);
+    animateProgress(task.key, progressValue, task.max);
+
+    // subcards de estudos
+    if (task.key === "estudos") {
+      estudos.forEach(lang => {
+        const subKey = "est_" + lang;
+        const val = load(subKey);
+
         const sub = document.createElement("div");
         sub.className = "card sub-card";
-        sub.innerHTML=`
+
+        sub.innerHTML = `
           <h3>${lang}</h3>
-          <div class='progress-bar'><div class='progress' id='progress-${key}' style='width:0%'></div></div>
-          <button class='btn' onclick="inc('${key}')">+10%</button>
-          <button class='btn reset' onclick="reset('${key}')">Reiniciar</button>
+          <div class="progress-bar">
+            <div class="progress" id="progress-${subKey}" style="width:0%"></div>
+          </div>
+          <button class="btn" onclick="inc('${subKey}')">+10%</button>
+          <button class="btn reset" onclick="reset('${subKey}')">Reiniciar</button>
         `;
+
         cards.appendChild(sub);
-        animateProgress(key, p2, 100);
+        animateProgress(subKey, val, 100);
       });
     }
   });
 }
 
-/* ==========================================
-    FUNÇÃO DE ANIMAÇÃO SUAVE
-========================================== */
-function animateProgress(key, target, max){
-  const progressBar = document.getElementById(`progress-${key}`);
-  if(!progressBar) return;
+
+/* ============================================================
+   ANIMAÇÃO DA BARRA
+============================================================ */
+function animateProgress(key, target, max) {
+  const bar = document.getElementById(`progress-${key}`);
+  if (!bar) return;
+
   let current = 0;
-  const interval = setInterval(()=>{
-    if(current >= target) {
+
+  const interval = setInterval(() => {
+    if (current >= target) {
       clearInterval(interval);
       return;
     }
+
     current += 1;
-    let percent = (current/max)*100;
-    if(percent > 100) percent = 100;
-    progressBar.style.width = percent + "%";
-  }, 15); // velocidade da animação (15ms)
+    bar.style.width = Math.min((current / max) * 100, 100) + "%";
+
+  }, 12);
 }
 
-/* ==========================================
-    ESTATÍSTICAS / PIRÂMIDE
-========================================== */
-function renderStats(){
+
+/* ============================================================
+   ESTATÍSTICAS GERAIS
+============================================================ */
+
+function renderStats() {
   const area = document.getElementById("content");
   area.innerHTML = "<h1>Estatísticas</h1>";
-  let html = "<div class='card'><h2>Resumo</h2>";
-  tasks.forEach(t=> html+= `<p>${t.name}: ${load(t.key)}%</p>`);
+
+  let html = `<div class='card'><h2>Resumo</h2>`;
+  tasks.forEach(t => {
+    html += `<p>${t.name}: ${load(t.key)}%</p>`;
+  });
   html += "</div>";
+
   area.innerHTML += html;
   renderStatsPyramid();
 }
 
-function renderStatsPyramid(){
+function renderStatsPyramid() {
   const area = document.getElementById("content");
+
   let html = `
     <div class="card">
       <h2>Progresso Visual</h2>
       <div class="pyramid-container">
   `;
-  tasks.forEach(t=>{
+
+  tasks.forEach(t => {
     const val = load(t.key);
-    const height = val*2;
+    const height = val * 2;
+
     html += `
       <div class="bar">
         <div class="bar-value">${val}%</div>
-        <div class="bar-fill" style="--target-height:${height}px" onanimationend="this.classList.add('grown')"></div>
+        <div class="bar-fill" style="--target-height:${height}px"></div>
         <span class="bar-label">${t.name}</span>
       </div>
     `;
   });
+
   html += "</div></div>";
   area.innerHTML += html;
 }
 
-/* ==========================================
-    HUMOR
-========================================== */
-function renderHumor(){
+
+/* ============================================================
+   HUMOR – TELA SIMPLES
+============================================================ */
+function renderHumor() {
   const area = document.getElementById("content");
+
   area.innerHTML = `
     <h1>Humor</h1>
+
     <div class='card'>
       <p>Como você está hoje?</p>
+
       <span class='emoji' onclick="setHumor('😡')">😡</span>
       <span class='emoji' onclick="setHumor('😐')">😐</span>
       <span class='emoji' onclick="setHumor('🙂')">🙂</span>
       <span class='emoji' onclick="setHumor('😄')">😄</span>
+
       <h2 id='humorDisplay'></h2>
     </div>
   `;
-  document.getElementById("humorDisplay").innerText = localStorage.getItem("emoji") || "Clique em um emoji!";
+
+  document.getElementById("humorDisplay").innerText =
+    localStorage.getItem("emoji") || "Clique em um emoji!";
 }
 
-function setHumor(e){
-  localStorage.setItem("emoji", e);
-  document.getElementById("humorDisplay").innerText = e;
+function setHumor(emoji) {
+  localStorage.setItem("emoji", emoji);
+  document.getElementById("humorDisplay").innerText = emoji;
 }
 
-/* ==========================================
-    ÁGUA
-========================================== */
-function renderAgua(){
+
+/* ============================================================
+   ÁGUA – TELA COMPLETA (controle mensal)
+============================================================ */
+function renderAgua() {
   const area = document.getElementById("content");
   const litros = load("agua_mes");
   const hist = getWeekHistory();
@@ -186,17 +260,21 @@ function renderAgua(){
 
   area.innerHTML = `
     <h1>Água Mensal</h1>
+
     <div class='card'>
       <p>Meta: ${metaMensal} litros / mês</p>
       <p>Você já bebeu: <strong>${litros} L</strong></p>
+
       <button class='btn' onclick='addLitro()'>Beber 1L</button>
       <button class='btn reset' onclick='resetAgua()'>Reiniciar</button>
     </div>
   `;
 
   let grafico = "<h2>Consumo semanal</h2><div class='water-bar-container'>";
-  hist.forEach((v,i)=>{
-    const altura = Math.min(v/metaMensal,1)*alturaMax;
+
+  hist.forEach((v, i) => {
+    const altura = Math.min(v / metaMensal, 1) * alturaMax;
+
     grafico += `
       <div class="water-bar-column">
         <div class="water-bar-fill" style="height:${altura}px"></div>
@@ -204,68 +282,81 @@ function renderAgua(){
       </div>
     `;
   });
+
   grafico += "</div>";
+
   area.innerHTML += `<div class='card'>${grafico}</div>`;
 }
 
-function resetAgua(){
-  save("agua_mes",0);
+function resetAgua() {
+  save("agua_mes", 0);
   saveWeekHistory([0,0,0,0,0,0,0]);
   renderAgua();
 }
 
-function createDrop(){
+function createDrop() {
   const card = document.querySelector(".card");
-  if(!card) return;
+  if (!card) return;
+
   const drop = document.createElement("div");
-  drop.className="drop";
+  drop.className = "drop";
+
   card.appendChild(drop);
-  setTimeout(()=>drop.remove(),1400);
+  setTimeout(() => drop.remove(), 1400);
 }
 
-function addLitro(){
+function addLitro() {
   const metaMensal = 30;
-  let atual = load("agua_mes");
-  atual = Math.min(atual + 1, metaMensal);
-  save("agua_mes", atual);
+  let litros = load("agua_mes");
 
-  let hist = getWeekHistory();
-  let dia = new Date().getDay();
-  hist[dia] += 1;
+  litros = Math.min(litros + 1, metaMensal);
+  save("agua_mes", litros);
+
+  const hist = getWeekHistory();
+  hist[new Date().getDay()] += 1;
   saveWeekHistory(hist);
 
   createDrop();
   renderAgua();
 }
 
-/* ==========================================
-    INCREMENTO GERAL
-========================================== */
-function inc(key){
-  let task = tasks.find(t=> t.key===key) || { max: 100 };
+
+/* ============================================================
+   INCREMENTO DE +10%
+============================================================ */
+function inc(key) {
+  const task = tasks.find(t => t.key === key) || { max: 100 };
+  const max = task.max;
+
   let v = load(key);
-  let max = task.max;
-  v = Math.min(v+10,max);
+  v = Math.min(v + 10, max);
+
   save(key, v);
   animateProgress(key, v, max);
 }
 
-/* ==========================================
-    FUNDO / TEMA
-========================================== */
-function applyBackground(){
-  let bg = localStorage.getItem("bgmode") || "light";
+
+/* ============================================================
+   TEMA / FUNDO
+============================================================ */
+function applyBackground() {
+  const bg = localStorage.getItem("bgmode") || "light";
   document.documentElement.setAttribute("data-bg", bg);
 }
 
-function toggleBackground(){
-  let current = localStorage.getItem("bgmode") || "light";
-  let next = current === "light" ? "dark" : "light";
+function toggleBackground() {
+  const current = localStorage.getItem("bgmode") || "light";
+  const next = current === "light" ? "dark" : "light";
+
   localStorage.setItem("bgmode", next);
   applyBackground();
 }
 
-document.addEventListener("DOMContentLoaded", ()=>{
+
+/* ============================================================
+   INICIALIZAÇÃO DO APP
+============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
   applyBackground();
   monthlyReset();
   navigate("dashboard");
