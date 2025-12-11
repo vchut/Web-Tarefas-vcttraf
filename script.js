@@ -229,8 +229,8 @@ function renderHumor() {
       <p>Como você está hoje?</p>
 
       <span class='emoji' onclick="setHumor('😡')">😡</span>
-      <span class='emoji' onclick="setHumor('😐')">😐</span>
-      <span class='emoji' onclick="setHumor('🙂')">🙂</span>
+      <span class='emoji' onclick="setHumor('😂')">😂</span>
+      <span class='emoji' onclick="setHumor('🤡')">🤡</span>
       <span class='emoji' onclick="setHumor('😄')">😄</span>
 
       <h2 id='humorDisplay'></h2>
