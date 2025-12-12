@@ -3,8 +3,8 @@
 ========================================== */
 :root {
   --icon-image: url("./assets/dark-light.svg");
-  --background-light: url("./assets/hol.jpg");
-  --background-dark: url("./assets/Ellie.jpg");
+  --background-light: url("./assets/the.jpg");
+  --background-dark: url("./assets/hol.jpg");
   --background-image: var(--background-light);
 }
 
