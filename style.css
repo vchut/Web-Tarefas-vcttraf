@@ -383,7 +383,7 @@ h1, h2 {
     background-attachment: scroll !important;
     background-size: cover !important;
     background-position: center !important;
-   
+    background-repeat: no-repeat !important;
     height: 100% !important;
   }
 
