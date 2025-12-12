@@ -1,78 +1,87 @@
 /* ==========================================
    RESET BASE
+   Remove estilos padrões do navegador
 ========================================== */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  margin: 0;              /* Remove margem padrão */
+  padding: 0;             /* Remove espaçamento interno padrão */
+  box-sizing: border-box; /* Facilita cálculo de largura/altura */
 }
 
+/* Garante que a página ocupe toda a tela */
 html, body {
   width: 100%;
   min-height: 100%;
-  overflow-x: hidden;
+  overflow-x: hidden;     /* Evita scroll horizontal */
 }
 
 /* ==========================================
-   VARIÁVEIS DE TEMA
+   VARIÁVEIS DE TEMA (GLOBAIS)
 ========================================== */
 :root {
+  /* Ícone padrão do botão de tema */
   --icon-image: url("./assets/dark-light.svg");
+
+  /* Imagens de fundo */
   --background-light: url("./assets/hol.jpg");
   --background-dark: url("./assets/Ellie.jpg");
+
+  /* Fundo ativo (começa no tema claro) */
   --background-image: var(--background-light);
 }
 
+/* Quando o atributo data-bg="light" estiver ativo */
 [data-bg="light"] {
-  --icon-image: url("./assets/dark-light.svg");
-  --background-image: var(--background-light);
+  --icon-image: url("./assets/dark-light.svg");     /* Ícone claro */
+  --background-image: var(--background-light);      /* Fundo claro */
 }
 
+/* Quando o atributo data-bg="dark" estiver ativo */
 [data-bg="dark"] {
-  --icon-image: url("./assets/mu-.svg");
-  --background-image: var(--background-dark);
+  --icon-image: url("./assets/mu-.svg");             /* Ícone escuro */
+  --background-image: var(--background-dark);        /* Fundo escuro */
 }
 
 /* ==========================================
-   FUNDO FIXO (AJUSTE DEFINITIVO MOBILE)
+   FUNDO FIXO (IMAGEM DE FUNDO GLOBAL)
 ========================================== */
 .bg-fixed {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
+  position: fixed;        /* Fica fixo na tela */
+  inset: 0;               /* Top, right, bottom e left = 0 */
+  width: 100vw;           /* Largura total da tela */
+  height: 100vh;          /* Altura total da tela */
 
-  background-image: var(--background-image);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-image: var(--background-image); /* Fundo baseado no tema */
+  background-size: cover;                    /* Preenche a tela */
+  background-position: center;               /* Centraliza a imagem */
+  background-repeat: no-repeat;              /* Não repete */
 
-  z-index: -1;
-  pointer-events: none;
-  transition: background-image 0.4s ease;
+  z-index: -1;            /* Fica atrás de todo conteúdo */
+  pointer-events: none;   /* Não interfere em cliques */
+  transition: background-image 0.4s ease; /* Transição suave */
 }
 
 /* ==========================================
-   BODY / LAYOUT
+   BODY / ESTRUTURA PRINCIPAL
 ========================================== */
 body {
-  display: flex;
+  display: flex;          /* Layout flexível (sidebar + main) */
   font-family: Arial, sans-serif;
-  color: white;
-  background: none;
+  color: white;           /* Texto branco */
+  background: none;       /* Fundo controlado pelo .bg-fixed */
   min-height: 100vh;
 }
 
 /* ==========================================
-   SIDEBAR
+   SIDEBAR (MENU LATERAL)
 ========================================== */
 .sidebar {
   width: 220px;
   background: #111;
   padding: 20px;
-  min-height: 100vh;
-  box-shadow: 0 0 10px #ff2fcf55;
-  flex-shrink: 0;
+  min-height: 100vh;      /* Ocupa toda a altura da tela */
+  box-shadow: 0 0 10px #ff2fcf55; /* Efeito neon */
+  flex-shrink: 0;         /* Não encolhe no flex */
 }
 
 .sidebar h2 {
@@ -80,7 +89,7 @@ body {
 }
 
 .sidebar ul {
-  list-style: none;
+  list-style: none;       /* Remove bolinhas da lista */
 }
 
 .sidebar li {
@@ -90,18 +99,19 @@ body {
   transition: 0.2s;
 }
 
+/* Efeito ao passar o mouse */
 .sidebar li:hover {
   color: #ff2fcf;
   transform: translateX(4px);
 }
 
 /* ==========================================
-   BOTÃO TEMA
+   BOTÃO DE TROCA DE TEMA
 ========================================== */
 #themeToggleButton {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: center;    /* Centraliza verticalmente */
+  gap: 10px;              /* Espaço entre ícone e texto */
   padding: 8px 12px;
   background: #222;
   color: white;
@@ -111,19 +121,20 @@ body {
   margin-top: 20px;
 }
 
+/* Ícone do botão de tema */
 #themeToggleIcon {
   width: 30px;
   height: 30px;
-  background-image: var(--icon-image);
+  background-image: var(--icon-image); /* Ícone muda com o tema */
   background-size: contain;
   background-repeat: no-repeat;
 }
 
 /* ==========================================
-   MAIN
+   MAIN (CONTEÚDO PRINCIPAL)
 ========================================== */
 main {
-  flex: 1;
+  flex: 1;                /* Ocupa todo espaço restante */
   padding: 30px;
 }
 
@@ -145,7 +156,7 @@ h1, h2 {
   padding: 20px;
   border-radius: 15px;
   box-shadow: 0 0 10px #ff2fcf55;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px); /* Efeito vidro */
 }
 
 .sub-card {
@@ -153,7 +164,7 @@ h1, h2 {
 }
 
 /* ==========================================
-   PROGRESS BAR
+   BARRA DE PROGRESSO
 ========================================== */
 .progress-bar {
   width: 100%;
@@ -168,7 +179,7 @@ h1, h2 {
   height: 100%;
   background: #ff2fcf;
   border-radius: 5px;
-  width: 0;
+  width: 0;               /* Começa vazia */
   transition: width 0.25s ease-in-out;
 }
 
@@ -239,7 +250,7 @@ h1, h2 {
 }
 
 /* ==========================================
-   PROGRESSO VISUAL (ESTATÍSTICAS)
+   ESTATÍSTICAS VISUAIS (BARRAS ANIMADAS)
 ========================================== */
 .pyramid-container {
   display: flex;
@@ -276,9 +287,10 @@ h1, h2 {
   text-align: center;
 }
 
+/* Anima o crescimento das barras */
 @keyframes growBar {
   to {
-    height: var(--target-height);
+    height: var(--target-height); /* Valor vem do JS */
   }
 }
 
@@ -287,7 +299,7 @@ h1, h2 {
 ========================================== */
 @media (max-width: 600px) {
   body {
-    flex-direction: column;
+    flex-direction: column; /* Sidebar vira topo */
   }
 
   .sidebar {
