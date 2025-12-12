@@ -43,7 +43,7 @@ body {
 }
 
 /* ==========================================
-   BACKGROUND FIXO (funciona melhor no mobile)
+   BACKGROUND FIXO (CORREÇÃO PARA CELULAR)
 ========================================== */
 html::before {
   content: "";
@@ -54,8 +54,9 @@ html::before {
   height: 100%;
   background-image: var(--background-image);
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: center top; /* fixa a posição no topo */
   background-size: cover;
+  background-attachment: fixed; /* mantém a imagem fixa ao rolar */
   z-index: -1;
   transition: background-image 0.5s ease, background-color 0.5s ease;
 }
@@ -150,13 +151,9 @@ h1, h2 {
   padding: 20px;
   border-radius: 15px;
   box-shadow: 0 0 10px #ff2fcf55;
-
-  /* fallback para dispositivos que não suportam */
   background-color: rgba(20, 20, 20, 0.85);
-
-  /* efeito blur real (onde for suportado) */
   backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px); /* Safari / iOS */
+  -webkit-backdrop-filter: blur(3px);
 }
 
 .sub-card {
