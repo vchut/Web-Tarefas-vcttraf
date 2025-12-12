@@ -375,20 +375,3 @@ h1, h2 {
   }
 }
 
-/* ==========================================
-   CORREÇÃO PARA CELULARES (SEM ZOOM, SEM CORTE, SEM FUNDO PRETO)
-========================================== */
-@media (max-width: 100px) {
-  html {
-    background-attachment: scroll !important;
-    background-size: cover !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    height: 100% !important;
-  }
-
-  body {
-    min-height: 100vh !important;
-    background: transparent !important;
-  }
-}
