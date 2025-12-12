@@ -29,26 +29,25 @@ html, body {
   width: 100%;
 }
 
-/* fundo fixo para mobile */
+body {
+  display: flex;
+  flex-direction: row;
+  font-family: Arial, sans-serif;
+  color: white;
+  transition: background-image 0.5s ease, background-color 0.5s ease;
+  overflow-x: hidden;
+}
+
+/* FUNDO FIXO COMPATÍVEL COM MOBILE */
 .bg-fixed {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background-image: var(--background-image);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   z-index: -1;
   transition: background-image 0.5s ease;
-}
-
-body {
-  display: flex;
-  flex-direction: row;
-  font-family: Arial, sans-serif;
-  color: white;
 }
 
 /* ==========================================
@@ -86,7 +85,6 @@ body {
   width: 220px;
   background: #111;
   padding: 20px;
-  min-height: 100vh;
   box-shadow: 0 0 10px #ff2fcf55;
   flex-shrink: 0;
 }
@@ -315,7 +313,7 @@ h1, h2 { color: #ff2fcf; }
   .sidebar {
     width: 100%;
     height: auto;
-    min-height: 0;
+    min-height: unset;
     text-align: center;
   }
 
@@ -327,6 +325,10 @@ h1, h2 { color: #ff2fcf; }
     border-left-width: 20px;
     border-right-width: 20px;
   }
+}
+
+@media (min-width: 601px) {
+  .sidebar { min-height: 100vh; }
 }
 
 @media (max-width: 900px) {
