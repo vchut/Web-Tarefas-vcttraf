@@ -378,7 +378,7 @@ h1, h2 {
 /* ==========================================
    CORREÇÃO PARA CELULARES (SEM ZOOM, SEM CORTE, SEM FUNDO PRETO)
 ========================================== */
-@media (max-width: 360px) {
+@media (max-width: 100px) {
   html {
     background-attachment: scroll !important;
     background-size: cover !important;
