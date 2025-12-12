@@ -1,63 +1,67 @@
 /* ==========================================
-   VARIÁVEIS DE TEMA
+   TROCA DE FUNDO LIGHT/DARK
 ========================================== */
 :root {
-  --icon-light: url("./assets/dark-light.svg");
-  --icon-dark: url("./assets/mu-.svg");
-  --bg-light: url("./assets/hol.jpg");
-  --bg-dark: url("./assets/Ellie.jpg");
-
-  --text-light: #fff;
-  --text-dark: #ff2fcf;
-
-  --card-bg: rgba(20, 20, 20, 0.85);
-  --card-shadow: #ff2fcf55;
-
-  --water-color: #00f6ff;
+  --icon-image: url("./assets/dark-light.svg");
+  --background-light: url("./assets/hol.jpg");
+  --background-dark: url("./assets/Ellie.jpg");
+  --background-image: var(--background-light);
 }
 
-/* TEMA LIGHT */
 [data-bg="light"] {
-  --icon-image: var(--icon-light);
-  --background-image: var(--bg-light);
-  --text-color: var(--text-light);
+  --icon-image: url("./assets/dark-light.svg");
+  --background-image: var(--background-light);
 }
 
-/* TEMA DARK */
 [data-bg="dark"] {
-  --icon-image: var(--icon-dark);
-  --background-image: var(--bg-dark);
-  --text-color: var(--text-dark);
+  --icon-image: url("./assets/mu-.svg");
+  --background-image: var(--background-dark);
 }
 
 /* ==========================================
    BASE
 ========================================== */
-html, body {
+html {
+  background-color: #000;
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
-  transition: background-image 0.6s ease, color 0.6s ease;
+  transition: background-color 0.5s ease;
 }
 
-html {
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  width: 100%;
+  background-color: transparent;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: row;
+  transition: color 0.5s ease;
+}
+
+/* ==========================================
+   BACKGROUND FIXO (funciona melhor no mobile)
+========================================== */
+html::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-image: var(--background-image);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  background-attachment: fixed;
-}
-
-body {
-  display: flex;
-  flex-direction: row;
-  color: var(--text-color);
-  background-color: transparent;
+  z-index: -1;
+  transition: background-image 0.5s ease, background-color 0.5s ease;
 }
 
 /* ==========================================
-   BOTÃO DE TROCA DE FUNDO
+   BOTÃO MUDAR FUNDO
 ========================================== */
 #themeToggleButton {
   display: flex;
@@ -65,12 +69,12 @@ body {
   gap: 10px;
   padding: 8px 12px;
   background: #222;
-  color: var(--text-color);
+  color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
-  transition: background 0.3s, color 0.3s;
+  transition: background 0.3s;
 }
 
 #themeToggleButton:hover {
@@ -94,14 +98,13 @@ body {
   background: #111;
   padding: 20px;
   min-height: 100vh;
-  box-shadow: 0 0 10px var(--card-shadow);
-  flex-shrink: 0;
+  box-shadow: 0 0 10px #ff2fcf55;
   box-sizing: border-box;
-  transition: width 0.3s;
+  flex-shrink: 0;
 }
 
 .sidebar h2 {
-  color: var(--text-dark);
+  color: #ff2fcf;
 }
 
 .sidebar ul {
@@ -117,7 +120,7 @@ body {
 }
 
 .sidebar li:hover {
-  color: var(--text-dark);
+  color: #ff2fcf;
   transform: translateX(4px);
 }
 
@@ -130,7 +133,7 @@ main {
 }
 
 h1, h2 {
-  color: var(--text-dark);
+  color: #ff2fcf;
 }
 
 /* ==========================================
@@ -143,13 +146,21 @@ h1, h2 {
 }
 
 .card {
-  background: var(--card-bg);
+  background: rgba(20, 20, 20, 0.95);
   padding: 20px;
   border-radius: 15px;
-  box-shadow: 0 0 10px var(--card-shadow);
+  box-shadow: 0 0 10px #ff2fcf55;
+
+  /* fallback para dispositivos que não suportam */
+  background-color: rgba(20, 20, 20, 0.85);
+
+  /* efeito blur real (onde for suportado) */
   backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  transition: background 0.3s, color 0.3s;
+  -webkit-backdrop-filter: blur(3px); /* Safari / iOS */
+}
+
+.sub-card {
+  margin-left: 10px;
 }
 
 /* ==========================================
@@ -165,7 +176,7 @@ h1, h2 {
 
 .progress {
   height: 100%;
-  background: var(--text-dark);
+  background: #ff2fcf;
   border-radius: 5px;
   width: 0;
   transition: width 0.25s ease-in-out;
@@ -177,19 +188,19 @@ h1, h2 {
 .btn {
   margin-top: 10px;
   padding: 10px;
-  background: var(--text-dark);
+  background: #ff2fcf;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  color: var(--text-light);
+  color: white;
   width: 100%;
   font-size: 16px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: 0.2s;
 }
 
 .btn:hover {
   transform: scale(1.04);
-  box-shadow: 0 0 10px var(--card-shadow);
+  box-shadow: 0 0 10px #ff2fcf99;
 }
 
 /* ==========================================
@@ -207,7 +218,7 @@ h1, h2 {
 }
 
 /* ==========================================
-   PIRÂMIDE TRIANGULAR
+   PIRÂMIDE TRIANGULAR (STATS)
 ========================================== */
 .pyramid-container {
   display: flex;
@@ -233,7 +244,7 @@ h1, h2 {
 .bar-value {
   font-size: 16px;
   font-weight: bold;
-  color: var(--text-dark);
+  color: #ff2fcf;
   margin-bottom: 8px;
   opacity: 0;
   animation: fadeIn 400ms forwards;
@@ -245,7 +256,7 @@ h1, h2 {
   height: 0;
   border-left: 30px solid transparent;
   border-right: 30px solid transparent;
-  border-bottom: 0 solid var(--text-dark);
+  border-bottom: 0 solid #ff2fcf;
   animation: growPyramid 900ms forwards;
   position: relative;
 }
@@ -258,7 +269,7 @@ h1, h2 {
   transform: translateX(-50%);
   width: 14px;
   height: 14px;
-  background: var(--text-dark);
+  background: #ff2fcf;
   border-radius: 50%;
   opacity: 0;
 }
@@ -272,11 +283,11 @@ h1, h2 {
   margin-top: 10px;
   font-size: 14px;
   text-align: center;
-  color: var(--text-dark);
+  color: #ff2fcf;
 }
 
 /* ==========================================
-   GRÁFICO DE ÁGUA
+   GRÁFICO DE CONSUMO DE ÁGUA
 ========================================== */
 .water-bar-container {
   display: flex;
@@ -296,7 +307,7 @@ h1, h2 {
 .water-bar-fill {
   width: 100%;
   height: 0;
-  background-color: var(--water-color);
+  background-color: #00f6ff;
   border-radius: 5px 5px 0 0;
   transition: height 0.3s ease;
 }
@@ -304,7 +315,7 @@ h1, h2 {
 .water-bar-column span {
   margin-top: 5px;
   font-size: 12px;
-  color: var(--text-light);
+  color: #fff;
 }
 
 /* ==========================================
@@ -316,8 +327,9 @@ h1, h2 {
 }
 
 @keyframes pulseDot {
-  0%, 100% { transform: translateX(-50%) scale(1); }
+  0% { transform: translateX(-50%) scale(1); }
   50% { transform: translateX(-50%) scale(1.5); }
+  100% { transform: translateX(-50%) scale(1); }
 }
 
 @keyframes fadeIn {
@@ -329,30 +341,49 @@ h1, h2 {
    RESPONSIVIDADE
 ========================================== */
 @media (max-width: 600px) {
-  body { flex-direction: column; }
-  .sidebar { width: 100%; min-height: auto; text-align: center; }
-  #cards { grid-template-columns: 1fr; }
-  .pyramid-container { gap: 15px; }
-  .bar-fill { border-left-width: 20px; border-right-width: 20px; }
+  body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    text-align: center;
+  }
+
+  #cards {
+    grid-template-columns: 1fr;
+  }
+
+  .pyramid-container {
+    gap: 15px;
+  }
+
+  .bar-fill {
+    border-left-width: 20px;
+    border-right-width: 20px;
+  }
 }
 
 @media (max-width: 900px) {
-  .sidebar { width: 170px; }
-  .bar-fill { border-left-width: 24px; border-right-width: 24px; }
+  .sidebar {
+    width: 170px;
+  }
+
+  .bar-fill {
+    border-left-width: 24px;
+    border-right-width: 24px;
+  }
 }
 
 @media (min-width: 1300px) {
-  .pyramid-container { gap: 40px; }
-  .bar-fill { border-left-width: 40px; border-right-width: 40px; }
-}
+  .pyramid-container {
+    gap: 40px;
+  }
 
-/* ==========================================
-   AJUSTE MOBILE PARA IMAGEM COMPLETA
-========================================== */
-@media (max-width: 480px) {
-  html {
-    background-attachment: scroll !important; /* evita problemas com fixed */
-    background-size: 100% 100%; /* preenche toda a tela */
-    background-position: center top;
+  .bar-fill {
+    border-left-width: 40px;
+    border-right-width: 40px;
   }
 }
