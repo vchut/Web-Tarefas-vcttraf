@@ -376,18 +376,19 @@ h1, h2 {
 }
 
 /* ==========================================
-   CORREÇÃO PARA CELULARES (SEM ZOOM E SEM CORTE)
+   CORREÇÃO PARA CELULARES (SEM ZOOM, SEM CORTE, SEM FUNDO PRETO)
 ========================================== */
-@media (max-width: 200px) {
+@media (max-width: 360px) {
   html {
-    background: none !important; /* remove o fundo do HTML */
+    background-attachment: scroll !important;
+    background-size: cover !important;
+    background-position: center !important;
+   
+    height: 100% !important;
   }
 
   body {
-    background-image: var(--background-image);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: scroll; /* impede zoom e bugs no mobile */
+    min-height: 100vh !important;
+    background: transparent !important;
   }
 }
