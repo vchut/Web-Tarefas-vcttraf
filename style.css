@@ -376,12 +376,18 @@ h1, h2 {
 }
 
 /* ==========================================
-   CORREÇÃO PARA CELULARES 
+   CORREÇÃO PARA CELULARES (SEM ZOOM E SEM CORTE)
 ========================================== */
 @media (max-width: 480px) {
   html {
-    background-attachment: scroll !important;
+    background: none !important; /* remove o fundo do HTML */
+  }
+
+  body {
+    background-image: var(--background-image);
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll; /* impede zoom e bugs no mobile */
   }
 }
