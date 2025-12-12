@@ -378,7 +378,7 @@ h1, h2 {
 /* ==========================================
    CORREÇÃO PARA CELULARES (SEM ZOOM E SEM CORTE)
 ========================================== */
-@media (max-width: 480px) {
+@media (max-width: 200px) {
   html {
     background: none !important; /* remove o fundo do HTML */
   }
