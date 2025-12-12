@@ -378,9 +378,10 @@ h1, h2 {
 /* ==========================================
    CORREÇÃO PARA CELULARES 
 ========================================== */
-@media (max-width: 100px) {
+@media (max-width: 480px) {
   html {
     background-attachment: scroll !important;
     background-size: cover;
+    background-position: center;
   }
 }
