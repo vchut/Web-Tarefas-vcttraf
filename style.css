@@ -346,7 +346,13 @@ h1, h2 {
   .bar-fill { border-left-width: 40px; border-right-width: 40px; }
 }
 
-/* Correção mobile para background fixed */
+/* ==========================================
+   AJUSTE MOBILE PARA IMAGEM COMPLETA
+========================================== */
 @media (max-width: 480px) {
-  html { background-attachment: scroll !important; }
+  html {
+    background-attachment: scroll !important; /* evita problemas com fixed */
+    background-size: 100% 100%; /* preenche toda a tela */
+    background-position: center top;
+  }
 }
